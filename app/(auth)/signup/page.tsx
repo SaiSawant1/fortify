@@ -96,9 +96,7 @@ export default function SignupPage() {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your public display name.
-                    </FormDescription>
+                    <FormDescription>Enter your email.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
