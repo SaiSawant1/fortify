@@ -65,9 +65,7 @@ export default function LoginPage() {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your public display name.
-                    </FormDescription>
+                    <FormDescription>Enter Login user email.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -88,9 +86,7 @@ export default function LoginPage() {
                         placeholder="password@johndoe"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your public display name.
-                    </FormDescription>
+                    <FormDescription>Enter login password.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
