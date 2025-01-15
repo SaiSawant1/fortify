@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
+import { CreateNewUser } from "@/action/create-user";
 
 export default function SignupPage() {
   const [confirmationPassword, setConfirmationPassword] = useState("");
@@ -42,7 +43,9 @@ export default function SignupPage() {
       console.log(confirmationPassword);
       setError("Passwords don't match");
     } else {
-      console.log(value);
+      CreateNewUser(value)
+        .then((resp) => console.log(resp))
+        .catch((err) => setError(err));
     }
   };
   return (

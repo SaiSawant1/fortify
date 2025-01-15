@@ -3,7 +3,9 @@
 import { InputType, ReturnType } from "./type";
 import { prisma } from "@/lib/db";
 
-export async function handler(input: InputType): Promise<ReturnType | Error> {
+export async function CreateNewUser(
+  input: InputType,
+): Promise<ReturnType | Error> {
   let user;
   try {
     user = prisma.user.create({
