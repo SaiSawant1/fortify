@@ -1,14 +1,14 @@
 "use server";
 
+import { CreateSafeAction } from "@/lib/createSafeAction";
 import { InputType, ReturnType } from "./type";
 import { prisma } from "@/lib/db";
+import { CreateUserSchema } from "./schema";
 
-export async function CreateNewUser(
-  input: InputType,
-): Promise<ReturnType | Error> {
+export async function handler(input: InputType): Promise<ReturnType> {
   let user;
   try {
-    user = prisma.user.create({
+    user = await prisma.user.create({
       data: {
         name: input.name,
         password: input.password,
@@ -16,8 +16,10 @@ export async function CreateNewUser(
       },
     });
   } catch (err) {
-    console.log(err);
+    return { error: `${err}` };
   }
 
-  return user;
+  return { data: user };
 }
+
+export const RegisterUser = CreateSafeAction(CreateUserSchema, handler);

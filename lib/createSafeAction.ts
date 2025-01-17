@@ -7,7 +7,7 @@ export type FieldErrors<T> = {
 export type ActionState<TInput, TOutput> = {
   fieldErrors?: FieldErrors<TInput>;
   error?: string;
-  output?: TOutput;
+  data?: TOutput;
 };
 
 export const CreateSafeAction = <TInput, TOutput>(
