@@ -1,0 +1,4 @@
+
+1-> Use user payload to create the jwt toke while login and signup.
+2-> Send set this token using cookies.
+3-> create api route that will allow the use of session in both client and server side cookies.
