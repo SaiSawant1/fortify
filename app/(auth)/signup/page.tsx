@@ -23,11 +23,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
-import { CreateNewUser } from "@/action/create-user";
+import { useSafeAction } from "@/hooks/useSafeAction";
+import { RegisterUser } from "@/action/create-user";
 
 export default function SignupPage() {
   const [confirmationPassword, setConfirmationPassword] = useState("");
   const [error, setError] = useState("");
+  const { execute, isLoading } = useSafeAction(RegisterUser, {
+    onError: (err) => {
+      setError(err);
+    },
+  });
   const form = useForm<signupFormSchemaType>({
     resolver: zodResolver(signupFormSchema),
     defaultValues: {
@@ -43,9 +49,7 @@ export default function SignupPage() {
       console.log(confirmationPassword);
       setError("Passwords don't match");
     } else {
-      CreateNewUser(value)
-        .then((resp) => console.log(resp))
-        .catch((err) => setError(err));
+      execute(value);
     }
   };
   return (
@@ -150,12 +154,22 @@ export default function SignupPage() {
                   </div>
                 )}
               </FormItem>
-              <Button
-                className="text-brand_primary/50 hover:text-brand_primary border-white border bg-brand_secondary transition-all hover:bg-brand_secondary/10 mt-5"
-                aria-label="submit-signup"
-              >
-                Sing-Up
-              </Button>
+              {isLoading ? (
+                <Button
+                  disabled={true}
+                  aria-label="submit-signup-disabled"
+                  className="mt-5 bg-brand_primary/35"
+                >
+                  Processing...
+                </Button>
+              ) : (
+                <Button
+                  className="text-brand_primary/50 hover:text-brand_primary border-white border bg-brand_secondary transition-all hover:bg-brand_secondary/10 mt-5"
+                  aria-label="submit-signup"
+                >
+                  Sing-Up
+                </Button>
+              )}
             </form>
           </Form>
         </CardContent>

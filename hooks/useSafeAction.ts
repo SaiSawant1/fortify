@@ -13,7 +13,7 @@ interface UseActionOption<TOutput> {
 
 export const useSafeAction = <TInput, TOutput>(
   action: Action<TInput, TOutput>,
-  options: UseActionOption<TOutput>,
+  options?: UseActionOption<TOutput>,
 ) => {
   const [fieldErros, setFieldErrors] = useState<
     FieldErrors<TInput> | undefined
@@ -41,7 +41,7 @@ export const useSafeAction = <TInput, TOutput>(
         }
       } finally {
         setIsLoading(false);
-        options.onComplete?.();
+        options?.onComplete?.();
       }
     },
     [action, options],
