@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CreateUserSchema } from "./schema";
-import { User } from "@prisma/client";
 import { ActionState } from "@/lib/createSafeAction";
+import { User } from "@prisma/client";
 
 export type InputType = z.infer<typeof CreateUserSchema>;
 

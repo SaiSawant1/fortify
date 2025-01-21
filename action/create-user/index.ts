@@ -5,6 +5,7 @@ import { InputType, ReturnType } from "./type";
 import { prisma } from "@/lib/db";
 import { CreateUserSchema } from "./schema";
 import bcrypt from "bcryptjs";
+import { setSessionCookies } from "@/lib/auth/server";
 
 export async function handler(input: InputType): Promise<ReturnType> {
   let user;
@@ -20,6 +21,8 @@ export async function handler(input: InputType): Promise<ReturnType> {
   } catch (err) {
     return { error: `${err}` };
   }
+
+  await setSessionCookies({ name: user.name, email: user.email, id: user.id });
 
   return { data: user };
 }
