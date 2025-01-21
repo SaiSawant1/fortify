@@ -22,6 +22,20 @@ export const setSessionCookies = async (payload: UserSessionType) => {
   });
 };
 
+export const verifyToken = async (): Promise<boolean> => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("session");
+  if (token?.value) {
+    try {
+      jwt.verify(token?.value, process.env.JWT_SECRET!);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  return false;
+};
+
 export const deleteSessionCookies = async () => {
   (await cookies()).delete("session");
 };
