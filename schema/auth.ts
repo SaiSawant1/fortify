@@ -20,3 +20,11 @@ export const signupFormSchema = z.object({
 });
 
 export type signupFormSchemaType = z.infer<typeof signupFormSchema>;
+
+export const UserSessionSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  email: z.string().min(1),
+});
+
+export type UserSessionType = z.infer<typeof UserSessionSchema>;

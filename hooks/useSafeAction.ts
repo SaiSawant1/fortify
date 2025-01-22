@@ -34,10 +34,12 @@ export const useSafeAction = <TInput, TOutput>(
           setFieldErrors(result.fieldErrors);
         }
         if (result.error) {
+          options?.onError?.(result.error);
           setError(result.error);
         }
         if (result.data) {
           setData(result.data);
+          options?.onSuccess?.(result.data);
         }
       } finally {
         setIsLoading(false);
