@@ -9,7 +9,7 @@ import { setSessionCookies } from "@/lib/auth/server";
 
 export async function handler(input: InputType): Promise<ReturnType> {
   let user;
-  const hashedPassword = await bcrypt.hash(process.env.HASH_SECRET!, 10);
+  const hashedPassword = await bcrypt.hash(input.password, 10);
   try {
     user = await prisma.user.create({
       data: {

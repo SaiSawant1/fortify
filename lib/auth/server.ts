@@ -1,6 +1,10 @@
 import { UserSessionType } from "@/schema/auth";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
+
+interface CustomJWTPayload extends JwtPayload {
+  data: UserSessionType;
+}
 
 export const signtoken = async (payload: UserSessionType): Promise<string> => {
   const token = jwt.sign({ data: payload }, process.env.JWT_SECRET!, {
@@ -34,6 +38,17 @@ export const verifyToken = async (): Promise<boolean> => {
     }
   }
   return false;
+};
+
+export const getUserSession = async () => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("session");
+  if (!token) {
+    return undefined;
+  }
+  const decoded = jwt.verify(token.value, process.env.JWT_SECRET!);
+
+  return (decoded as CustomJWTPayload)?.data;
 };
 
 export const deleteSessionCookies = async () => {

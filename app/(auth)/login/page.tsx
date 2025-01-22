@@ -22,8 +22,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useState } from "react";
+import { useSafeAction } from "@/hooks/useSafeAction";
+import { LoginUser } from "@/action/login-user";
 
 export default function LoginPage() {
+  const [error, setError] = useState("");
+  const { execute, isLoading } = useSafeAction(LoginUser, {
+    onError: (err) => {
+      setError(err);
+    },
+  });
   const form = useForm<loginFormSchemaType>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -33,7 +42,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = (value: loginFormSchemaType) => {
-    console.log(value);
+    execute(value);
   };
   return (
     <div className="bg-brand_secondary/90 h-full w-full flex justify-center items-center">
@@ -87,22 +96,38 @@ export default function LoginPage() {
                       />
                     </FormControl>
                     <FormDescription>Enter login password.</FormDescription>
+
+                    {error && (
+                      <div aria-label="error-message" className="text-red-600">
+                        {error}
+                      </div>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button
-                className="text-brand_primary/50 hover:text-brand_primary border-white border bg-brand_secondary transition-all hover:bg-brand_secondary/10 mt-5"
-                aria-label="submit-login"
-              >
-                Login
-              </Button>
+              {isLoading ? (
+                <Button
+                  disabled={true}
+                  aria-label="submit-signup-disabled"
+                  className="mt-5 bg-brand_primary/35"
+                >
+                  Processing...
+                </Button>
+              ) : (
+                <Button
+                  className="text-brand_primary/50 hover:text-brand_primary border-white border bg-brand_secondary transition-all hover:bg-brand_secondary/10 mt-5"
+                  aria-label="submit-signup"
+                >
+                  Login
+                </Button>
+              )}
             </form>
           </Form>
         </CardContent>
         <CardFooter className="text-secondary">
           Do you want to create a new account?{" "}
-          <Link className="text-brand_primary" href="/singup">
+          <Link className="text-brand_primary" href="/signup">
             {" "}
             Signup
           </Link>
