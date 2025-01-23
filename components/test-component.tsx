@@ -1,4 +1,11 @@
 "use client";
+
+import { useUserSession } from "@/lib/auth/client";
+
 export const TestComponent = () => {
-  return <div></div>;
+  const { session } = useUserSession();
+  if (!session) {
+    return <div>no session</div>;
+  }
+  return <div>{session.id}</div>;
 };
