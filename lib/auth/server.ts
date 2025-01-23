@@ -1,16 +1,14 @@
 import { UserSessionType } from "@/schema/auth";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-interface CustomJWTPayload extends JwtPayload {
-  data: UserSessionType;
-}
-
+const encodedKey = new TextEncoder().encode(process.env.JWT_SECRET!);
 export const signtoken = async (payload: UserSessionType): Promise<string> => {
-  const token = jwt.sign({ data: payload }, process.env.JWT_SECRET!, {
-    expiresIn: "1h",
-  });
-
+  const jwt = new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("1h");
+  const token = jwt.sign(encodedKey);
   return token;
 };
 
@@ -31,7 +29,7 @@ export const verifyToken = async (): Promise<boolean> => {
   const token = cookieStore.get("session");
   if (token?.value) {
     try {
-      jwt.verify(token?.value, process.env.JWT_SECRET!);
+      jwtVerify(token?.value, encodedKey, { algorithms: ["HS256"] });
       return true;
     } catch {
       return false;
@@ -46,9 +44,18 @@ export const getUserSession = async () => {
   if (!token) {
     return undefined;
   }
-  const decoded = jwt.verify(token.value, process.env.JWT_SECRET!);
+  const { payload } = await jwtVerify(token.value, encodedKey);
 
-  return (decoded as CustomJWTPayload)?.data;
+  return payload;
+};
+
+export const isAuthenticated = async () => {
+  const session = await getUserSession();
+  if (session) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 export const deleteSessionCookies = async () => {
