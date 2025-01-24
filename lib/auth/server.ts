@@ -1,8 +1,11 @@
 import { UserSessionType } from "@/schema/auth";
-import { SignJWT, jwtVerify } from "jose";
+import { JWTPayload, SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 const encodedKey = new TextEncoder().encode(process.env.JWT_SECRET!);
+
+export type CustomJWTPayload = JWTPayload & UserSessionType;
+
 export const signtoken = async (payload: UserSessionType): Promise<string> => {
   const jwt = new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
@@ -38,7 +41,9 @@ export const verifyToken = async (): Promise<boolean> => {
   return false;
 };
 
-export const getUserSession = async () => {
+export const getUserSession = async (): Promise<
+  CustomJWTPayload | undefined
+> => {
   const cookieStore = await cookies();
   const token = cookieStore.get("session");
   if (!token) {
@@ -46,7 +51,7 @@ export const getUserSession = async () => {
   }
   const { payload } = await jwtVerify(token.value, encodedKey);
 
-  return payload;
+  return payload as CustomJWTPayload;
 };
 
 export const isAuthenticated = async () => {
